@@ -15,7 +15,7 @@ export class ChatComponent implements OnInit {
     }
 
     ngOnInit() {
-        let message = new Message("Welcome to my ChatBot", "assets/images/cocobot.svg", new Date());
+        let message = new Message("Welcome to my ChatBot", "assets/images/bot.png", new Date());
         this.messages.push(message);
     }
 
@@ -26,7 +26,7 @@ export class ChatComponent implements OnInit {
             res => {
                 //let message = new Message(res.result.speech, "assets/images/cocobot.svg", )
                 console.log(res['result']['fulfillment']['speech']);
-                let message = new Message(res['result']['fulfillment']['speech'], "assets/images/cocobot.svg", new Date());
+                let message = new Message(res['result']['fulfillment']['speech'], "assets/images/bot.png", new Date());
                 this.messages.push(message);
             },
             err => {
