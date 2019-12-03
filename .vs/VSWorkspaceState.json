@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\chatBot"
+    "\\BotTom",
+    "\\BotTom\\ClientApp"
   ],
-  "SelectedNode": "\\chatBot",
+  "SelectedNode": "\\BotTom\\ClientApp\\package.json",
   "PreviewInSolutionExplorer": false
 }
