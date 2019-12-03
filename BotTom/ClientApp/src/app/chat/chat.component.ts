@@ -1,67 +1,38 @@
-import { Component, OnInit, Input, AfterViewInit, ViewChild, ViewChildren, QueryList, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { Message } from '../models/message'
-import { ChatService } from '../services/chat/chat.service'
-
+import { Component, OnInit } from '@angular/core';
+import { Message } from '../models/message.model';
+import { ChatService } from '../services/chat/chat.service';
 
 @Component({
-  selector: 'app-chat',
-  templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+    selector: 'app-chat',
+    templateUrl: './chat.component.html',
+    styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-  user : any;
-  public message : Message;
-  public messages : Message[];
+    messages: Array<Message>;
 
-  // Code for Scrolling
-  @ViewChild('chatlist', { read: ElementRef }) chatList: ElementRef;
-  @ViewChildren(ChatComponent, { read: ElementRef }) chatItems: QueryList<ChatComponent>;
-
-  constructor(
-  	private chatService : ChatService,
-    private router: Router
-  	) { 
-  	this.message = new Message('', 'assets/images/user.png', new Date());
-  	this.messages = [
-  	new Message('Welcome to chatbot universe', 'assets/images/bot.png', new Date())
-  	];
-  }
-
-  ngOnInit() {
-    this.user = localStorage.getItem("user");
-    console.log(this.user, "logged in user")
-    if(!this.user)
-      this.router.navigateByUrl('');
-  }
-
-  ngAfterViewInit() {
-    this.chatItems.changes.subscribe(elements => {
-      this.scrollToBottom();
-    });
-  }
-
-  sendMessage(){
-    this.message["timestamp"] = new Date();
-    this.messages.push(this.message);
-
-    this.chatService.getResponse(this.message["content"]).subscribe(res => {
-      console.log(res);
-      this.messages.push(
-        new Message(res.result.fulfillment.speech, 'assets/images/bot.png' ,res.timestamp)
-      );
-      this.scrollToBottom();
-    });
-
-    this.message = new Message('', 'assets/images/user.png', new Date);
-  }
-
-  private scrollToBottom(): void {
-    try {
-      this.chatList.nativeElement.scrollTop = this.chatList.nativeElement.scrollHeight;
+    constructor(private chatService: ChatService) {
+        this.messages = new Array<Message>();
     }
-    catch (err) {
-      console.log('Could not find the "chatList" element.');
+
+    ngOnInit() {
+        let message = new Message("Welcome to my ChatBot", "assets/images/cocobot.svg", new Date());
+        this.messages.push(message);
     }
-  }
+
+    sendMessage = (messageContent) => {
+        let message = new Message(messageContent.value, "assets/images/user.png", new Date());
+        this.messages.push(message);
+        this.chatService.sendMessage(messageContent.value).subscribe(
+            res => {
+                //let message = new Message(res.result.speech, "assets/images/cocobot.svg", )
+                console.log(res['result']['fulfillment']['speech']);
+                let message = new Message(res['result']['fulfillment']['speech'], "assets/images/cocobot.svg", new Date());
+                this.messages.push(message);
+            },
+            err => {
+                console.log(err)
+            }
+        );
+    }
+
 }

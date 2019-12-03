@@ -4,23 +4,22 @@
   margin-top: 50px;
 }
 
-.chatcontrol{
+.chatcontrol {
   float: left;
   width: 100%;
-
-  .chatinput{
+}
+  .chatcontrol>.chatinput{
     width: 80%;
     float: left;
     border-radius: 0;
   }
 
-  .sendbtn{
+  .chatcontrol > .sendbtn {
     width: 20%;
     float: left;
     border-radius: 0;
     text-transform: uppercase;
   }
-}
 
 .message {
   font-size: 1em;
@@ -31,15 +30,15 @@
 .timeform {
   float: left;
   width: 100%;
+}
 
-  i {
-    margin-left: 20px;
-  }
+.timeform > i {
+  margin-left: 20px;
+}
 
-  .timestamp{
+  .timeform > .timestamp {
     font-size: 0.6em;
   }
-}
 
 .avatar{
   width: 50px;

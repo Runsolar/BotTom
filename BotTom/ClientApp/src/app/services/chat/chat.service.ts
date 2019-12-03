@@ -1,30 +1,33 @@
-import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
+import { Injectable, EventEmitter } from '@angular/core';
+//import { Http, Headers } from "@angular/http";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class ChatService {
+    public phraseResponded: EventEmitter<number> = new EventEmitter<number>();
 
-  private baseURL: string = "https://api.dialogflow.com/v1/query?v=20150910";
-  private token: string = "63db21b6d636493ebd96662f21c3206d";
+    url = "https://api.dialogflow.com/v1/query?v=20150910";
+    accessToken = "2e4bd97ced8c4518b61cc98c7845a63d";
 
-  constructor(private http: Http){}
+    constructor(private http: HttpClient) { }
 
-  public getResponse(query: string){
-    let data = {
-      query : query,
-      lang: 'en',
-      sessionId: '1234567'
+    public sendMessage(message: string): Observable<any> {
+        let data = {
+            lang: "ru",
+            sessionId: "123456",
+            query: message
+        }
+
+        let headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.accessToken
+        });
+        //headers.append("Authorization", "Bearer " + this.accessToken);
+
+        return this.http.post(this.url, data, { headers: headers });
     }
-    let headers = new Headers();
-    headers.append('Authorization', `Bearer ${this.token}`);
-
-    return this.http
-      .post(`${this.baseURL}`, data, {headers: headers})
-      .map(res => {
-        return res.json()
-      })
-  }
-
 }
