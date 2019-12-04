@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using BotTom.Hubs;
 
 namespace BotTom
 {
@@ -26,6 +27,8 @@ namespace BotTom
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,8 +43,13 @@ namespace BotTom
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+
+            app.UseSignalR(options =>
+            {
+                options.MapHub<ChatHub>("/hub");
+            });
 
             app.UseMvc(routes =>
             {

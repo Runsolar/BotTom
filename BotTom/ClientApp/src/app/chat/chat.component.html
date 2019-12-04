@@ -14,9 +14,9 @@
   </div>
   <form class="chatcontrol">
     <div class="input-group mb-3">
-      <input type="text" class="form-control chatinput" placeholder="Enter your Message" name="content" aria-label="Enter your Message" aria-describedby="Enter your Message" #messageContent />
+      <input type="text" class="form-control chatinput" placeholder="Enter your Message" name="content" aria-label="Enter your Message" aria-describedby="Enter your Message" (keyup.enter)="onClickSendMsg();" required [(ngModel)]="messageContent" value="{{ messageContent }}" />
       <div class="input-group-append">
-        <button class="btn btn-primary sendbtn" type="button" (click)="sendMessage(messageContent)" messageContent.value=''>Send</button>
+        <button class="btn btn-primary sendbtn" type="button" (click)="onClickSendMsg();">Send</button>
       </div>
     </div>
   </form>
