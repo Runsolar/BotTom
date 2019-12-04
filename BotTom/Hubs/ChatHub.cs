@@ -15,12 +15,6 @@ namespace BotTom.Hubs
         public string lang { get; set; }
         public string sessionId { get; set; }
         public string query { get; set; }
-        /*
-                public override string ToString()
-                {
-                    return $"{Name}: {Occupation}";
-                }
-                */
     }
     public class ChatHub : Hub
     {
@@ -41,20 +35,12 @@ namespace BotTom.Hubs
             //using var httpClient = new HttpClient();
 
             httpClient.DefaultRequestHeaders.Add("User-Agent", "C# console program");
-            //client.DefaultRequestHeaders.Add("Content-Type",  "application/json");
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-
             var response = await httpClient.PostAsync(url, data);
-
             string result = response.Content.ReadAsStringAsync().Result;
-
-            JObject o = JObject.Parse(result);
-            JObject o2 = JObject.FromObject(o.GetValue("result"));
-            JObject o3 = JObject.FromObject(o2.GetValue("fulfillment"));
-
+    
             OutboundMessage outMessage = new OutboundMessage();
-            outMessage.content = o3.GetValue("speech").ToString();
+            outMessage.content = (JObject.FromObject(JObject.FromObject((JObject.Parse(result).GetValue("result"))).GetValue("fulfillment")).GetValue("speech")).ToString();
             await Clients.All.SendAsync("broadcastMessageReceived", outMessage);
 
             httpClient.CancelPendingRequests();
