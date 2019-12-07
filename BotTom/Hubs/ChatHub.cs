@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace BotTom.Hubs
 {
@@ -18,13 +19,10 @@ namespace BotTom.Hubs
     }
     public class ChatHub : Hub
     {
+        static List<User> users = new List<User>();
         public async Task _newMessageFromClient(IncomingMessage inMessage)
         {
-            var dialogData = new QueryDialogFlowData();
-            dialogData.lang = "ru";
-            dialogData.sessionId = "1234567890";
-            dialogData.query = inMessage.content;
-
+            var dialogData = new QueryDialogFlowData() { lang = "ru", sessionId = Guid.NewGuid().ToString(), query = inMessage.content };
 
             var json = JsonConvert.SerializeObject(dialogData);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
