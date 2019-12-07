@@ -19,10 +19,19 @@ namespace BotTom.Hubs
     }
     public class ChatHub : Hub
     {
-        static List<User> users = new List<User>();
+        //static List<User> users = new List<User>();
         public async Task _newMessageFromClient(IncomingMessage inMessage)
         {
-            var dialogData = new QueryDialogFlowData() { lang = "ru", sessionId = Guid.NewGuid().ToString(), query = inMessage.content };
+            string connectionId = inMessage.connectionId;
+            bool isItFirstMessageFromCaller;
+            if (connectionId == null) {
+                isItFirstMessageFromCaller = true;
+                connectionId = Context.ConnectionId;
+            } else {
+                isItFirstMessageFromCaller = false;
+            }
+
+            var dialogData = new QueryDialogFlowData() { lang = "ru", sessionId = connectionId, query = inMessage.content };
 
             var json = JsonConvert.SerializeObject(dialogData);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
@@ -38,8 +47,11 @@ namespace BotTom.Hubs
             string result = response.Content.ReadAsStringAsync().Result;
     
             OutboundMessage outMessage = new OutboundMessage();
+            outMessage.connectionId = JObject.Parse(result).GetValue("sessionId").ToString();
             outMessage.content = (JObject.FromObject(JObject.FromObject((JObject.Parse(result).GetValue("result"))).GetValue("fulfillment")).GetValue("speech")).ToString();
-            await Clients.All.SendAsync("broadcastMessageReceived", outMessage);
+            
+            if(isItFirstMessageFromCaller) await Clients.Caller.SendAsync("privateMessageReceived", outMessage);
+            else await Clients.Client(connectionId).SendAsync("privateMessageReceived", outMessage);
 
             httpClient.CancelPendingRequests();
         }

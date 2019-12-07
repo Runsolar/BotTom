@@ -1,6 +1,7 @@
 export class IncomingMessage {
     senderId: number;
     receiverId: number;
+    connectionId: string;
     prvMsg: boolean;
     msgId: string;
     timestamp: string;
@@ -15,6 +16,7 @@ export class IncomingMessage {
     constructor(
         senderId?: number,
         receiverId?: number,
+        connectionId?: string,
         prvMsg?: boolean,
         msgId?: string,
         timestamp?: string,
@@ -28,6 +30,7 @@ export class IncomingMessage {
     ) {
         this.senderId = senderId;
         this.receiverId = receiverId;
+        this.connectionId = connectionId;
         this.prvMsg = prvMsg;
         this.msgId = msgId;
         this.timestamp = timestamp;

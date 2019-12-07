@@ -4,6 +4,7 @@
     {
         public int senderId { get; set; }
         public int receiverId { get; set; }
+        public string connectionId { get; set; }
         public bool prvMsg { get; set; }
         public string msgId { get; set; }
         public string timestamp { get; set; }

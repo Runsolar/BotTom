@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@aspnet/signalr';
-
-//import { Http, Headers } from "@angular/http";
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
 import { OutboundMessage } from '../../models/outbound-message.model';
 import { IncomingMessage } from '../../models/incoming-message.model';
 
@@ -17,7 +12,7 @@ const connection = new signalR.HubConnectionBuilder()
     providedIn: 'root'
 })
 export class ChatService {
-    myConnectionId: string = "000000000000000000";
+    myConnectionId: string = null;
     incomingmessages: Array<IncomingMessage>;
 
     constructor() {
@@ -28,8 +23,9 @@ export class ChatService {
 
     private registerOnServerEvents(): void {
         let self: ChatService = this;
-        connection.on("broadcastMessageReceived", (newIncomingMessage: IncomingMessage) => {
+        connection.on("privateMessageReceived", (newIncomingMessage: IncomingMessage) => {
             //console.log(newIncomingMessage.message);
+            self.myConnectionId = newIncomingMessage.connectionId;
             self.addIncomingMessageInPool(newIncomingMessage);
         });
     }
